@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import { LoadButton } from './Button.styled';
 
-export const Button = ({ onNextFetch }) => {
+export const Button = ({ onClick }) => {
   return (
-    <LoadButton type="button"  onClick={onNextFetch}>
+    <LoadButton type="button"  onClick={onClick}>
       Load more
     </LoadButton>
   );
@@ -11,5 +11,5 @@ export const Button = ({ onNextFetch }) => {
 
 
 Button.propTypes = {
-  onNextFetch: PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired,
 };

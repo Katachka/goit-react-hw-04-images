@@ -1,54 +1,49 @@
 import PropTypes from 'prop-types';
-import { Component } from 'react';
+import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Backdrop, ModalContainer } from './Modal.styled';
 
 const modalRoot = document.querySelector('#modal-root');
 
-export const Modal = class Modal extends Component {
-    static propTypes = {
-        title: PropTypes.string,
-        onClose: PropTypes.func.isRequired,
-        currentImageUrl: PropTypes.string,
-        currentImageDescription: PropTypes.string,
-    };
+export const Modal = ({ onClose, image }) => {
+ 
+    useEffect(() => {
+        const handleKeyDown = e => {
+            if (e.code === 'Escape') {
+                onClose();
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
 
-    componentDidMount() {
-        window.addEventListener('keydown', this.handleKeyDown);
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener('keydown', this.handleKeyDown);
-    }
-
-    handleClickBackdrop = e => {
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [onClose]);
+    
+    const handleClickBackdrop = e => {
         if (e.target === e.currentTarget) {
-        this.props.onClose();
+            onClose();
         }
     };
-
-    handleKeyDown = e => {
-        if (e.code === 'Escape') {
-        this.props.onClose();
-        }
-    };
-
-    render() {
-        const { currentImageUrl, currentImageDescription } =
-        this.props;
-
-        return createPortal(
-            <Backdrop onClick={this.handleClickBackdrop}>
-                <ModalContainer>
+    const { largeImageURL } = image;
+  
+    return createPortal(
+        <Backdrop onClick={handleClickBackdrop}>
+            <ModalContainer>
             
                 <img
-                    src={currentImageUrl}
-                    alt={currentImageDescription}
+                    src={largeImageURL}
+                    alt='img'
                     loading="lazy"
                 />
-                </ModalContainer>
-            </Backdrop>,
-            modalRoot
-        );
-    }
-}
+            </ModalContainer>
+        </Backdrop>,
+        modalRoot
+    );
+};
+
+
+Modal.propTypes = {
+  image: PropTypes.object,
+  onClose: PropTypes.func,
+};
